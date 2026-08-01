@@ -5,9 +5,21 @@ description: Django best practices and conventions. Use when creating, refactori
 
 # Django
 
-Official Django skill to write code with best practices, keeping up to date with new versions and features.
+An unofficial skill for writing Django code with best practices, based on the official Django documentation and community conventions, keeping up to date with new versions and features.
 
-Target Django 6.x and Python 3.12+ for new projects. Django 5.2 is the current LTS; do not write code for versions older than the LTS unless the project requires it. Features new in Django 6.1 (released August 2026) are marked below.
+Target Django 6.x and Python 3.12+ for new projects. Django 5.2 is the current LTS; do not write code for versions older than the LTS unless the project requires it. Features new in Django 6.0 and 6.1 are marked below.
+
+## Quick Reference
+
+* Custom user model: always define one before the first migration; see [Always Start With a Custom User Model](#always-start-with-a-custom-user-model).
+* Settings and secrets: read from the environment, never commit them, `DEBUG = False` in production; see [Settings](#settings) and [the deployment reference](references/deployment.md).
+* Models, queries, N+1, transactions, migrations: see [the ORM reference](references/orm.md). On 6.1+, `fetch_mode(models.FETCH_PEERS)` fixes most N+1 problems.
+* URLs, views, and forms: named URL patterns, generic class-based views, `ModelForm` with explicit `fields`; see [the views and forms reference](references/views-and-forms.md).
+* Templates: inheritance, autoescaping, and `{% partialdef %}` (6.0+); see [the templates reference](references/templates.md).
+* Async views, the async ORM, and the Tasks framework: see [the async reference](references/async.md).
+* Testing: `TestCase` with `setUpTestData()`; see [the testing reference](references/testing.md).
+* Admin: a configured `ModelAdmin`, never a bare `register()`; see [the admin reference](references/admin.md).
+* Deployment, HTTPS, CSP, static files, caching, email: see [the deployment reference](references/deployment.md).
 
 ## Use `django-admin` and `manage.py`
 
@@ -52,7 +64,7 @@ SECRET_KEY = "django-insecure-hardcoded-value"
 DEBUG = True  # left on in production
 ```
 
-`DEBUG` must be `False` in production, with `ALLOWED_HOSTS` set explicitly. See [the deployment reference](references/deployment.md) for production settings, security headers, CSP, static files, and email configuration.
+`DEBUG` must be `False` in production, with `ALLOWED_HOSTS` set explicitly. See [the deployment reference](references/deployment.md) for settings layout, production settings, security headers, CSP, static files, caching, and email configuration.
 
 ## Always Start With a Custom User Model
 
@@ -96,13 +108,14 @@ class Article(models.Model):
 
 ## Models and QuerySets
 
-See [the ORM reference](references/orm.md) for detailed patterns: model conventions, choices enums, constraints, `on_delete` options (including the database-level `DB_CASCADE` family in 6.1), queryset performance, fetch modes, transactions, and migrations.
+See [the ORM reference](references/orm.md) for detailed patterns: model conventions, choices enums, constraints and indexes, `on_delete` options (including the database-level `DB_CASCADE` family in 6.1), custom managers and querysets, queryset performance, fetch modes, transactions, and migrations.
 
 The essentials:
 
 - Give every model a `__str__` method and use `TextChoices`/`IntegerChoices` for choices.
 - Avoid N+1 queries with `select_related("field")` and `prefetch_related("field")` — always pass explicit field names. On Django 6.1+, `QuerySet.fetch_mode(models.FETCH_PEERS)` solves most N+1 problems without maintaining a field list.
 - Use the database, not Python: `exists()`, `count()`, `bulk_create()`, `F()` expressions.
+- Put business logic on models, managers, or a service layer — not in views or templates.
 - Never interpolate values into raw SQL — pass parameters.
 
 ## URLs
@@ -169,7 +182,7 @@ def article_detail(request, pk):
 
 Redirect after a successful POST. Never mutate data in a GET request. To preserve the HTTP method and body through a redirect, use `RedirectView.preserve_request = True` (Django 6.1+), which issues 307/308 instead of 302/301.
 
-Write async views only when the code inside genuinely awaits; see [the async reference](references/async.md) for async views, the async ORM interface, and the background Tasks framework.
+See [the views and forms reference](references/views-and-forms.md) for URL patterns, view customization hooks, permissions, pagination, and the messages framework. Write async views only when the code inside genuinely awaits; see [the async reference](references/async.md).
 
 ## Forms
 
@@ -196,6 +209,8 @@ fields = "__all__"  # can silently expose new sensitive fields
 # DO NOT DO THIS — bypasses all validation
 Article.objects.create(title=request.POST["title"])
 ```
+
+See [the views and forms reference](references/views-and-forms.md) for validation hooks, formsets, and file uploads.
 
 ## Templates
 
@@ -224,6 +239,8 @@ return render(request, "articles/list.html#article-card", {"article": article})
 ```
 
 On earlier versions, use the `django-template-partials` package.
+
+See [the templates reference](references/templates.md) for template configuration, context processors, custom tags and filters, fragment caching, and escaping rules.
 
 ## Security
 
@@ -279,10 +296,12 @@ def setUp(self):
     self.article = Article.objects.create(title="Testing")
 ```
 
-`pytest` with `pytest-django` is a fine alternative when the project already uses it.
+`pytest` with `pytest-django` is a fine alternative when the project already uses it. See [the testing reference](references/testing.md) for choosing a test case class, Django-specific assertions, query-count tests, and async tests.
 
 ## Admin
 
 Register models with a `ModelAdmin` that configures `list_display`, `list_filter`, and `search_fields` rather than a bare `admin.site.register()`. The admin is for trusted staff only — never expose it as a public-facing interface, and consider changing the default `/admin/` URL in production.
 
 On Django 6.1+, use the `location` argument of the `@admin.action()` decorator to make actions available on change forms as well as the change list, and prefer explicit field names over `list_select_related = True` (setting it to `True` is deprecated).
+
+See [the admin reference](references/admin.md) for inlines, computed columns, query optimization, custom actions, and permissions.
