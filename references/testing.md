@@ -61,7 +61,13 @@ Useful attributes on the response: `status_code`, `context`, `templates`, `conte
 - `assertContains(response, text)` / `assertNotContains` — checks the status code and the body together.
 - `assertRedirects(response, url)` — checks the redirect and that the target resolves.
 - `assertTemplateUsed(response, name)`
-- `assertFormError(response, "form", "field", "message")`
+- `assertFormError(response.context["form"], "field", "message")` — takes the form instance, not the response:
+
+```python
+# DO NOT DO THIS — the response-based signature was removed in Django 5.0
+self.assertFormError(response, "form", "title", "This field is required.")
+```
+
 - `assertQuerySetEqual(qs, expected)`
 - `assertNumQueries(n)` — the practical guard against N+1 regressions:
 

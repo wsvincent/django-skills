@@ -1,6 +1,6 @@
 ---
 name: django
-description: Django best practices and conventions. Use when creating, refactoring, or reviewing Django projects, apps, models, views, templates, forms, or settings. Keeps Django code secure, idiomatic, and up to date with the latest features and patterns, updated with new versions. Write new code or refactor and update old code.
+description: "Django best practices and conventions. Use when creating, refactoring, or reviewing Django projects, apps, models, views, templates, forms, admin, tests, or settings. Keeps Django code secure, idiomatic, and up to date with the latest features and patterns. Triggers on starting a Django project or app, writing models/migrations/querysets, class-based or function-based views, forms and validation, templates, the admin, tests, async views and background tasks, deployment and security settings, N+1 and slow-query debugging, and Django version upgrades."
 ---
 
 # Django
@@ -20,6 +20,7 @@ Target Django 6.x and Python 3.12+ for new projects. Django 5.2 is the current L
 * Testing: `TestCase` with `setUpTestData()`; see [the testing reference](references/testing.md).
 * Admin: a configured `ModelAdmin`, never a bare `register()`; see [the admin reference](references/admin.md).
 * Deployment, HTTPS, CSP, static files, caching, email: see [the deployment reference](references/deployment.md).
+* Multi-step tasks — new project, new app, pre-deploy, version upgrade, code review: see [the checklists](references/checklists.md).
 
 ## Use `django-admin` and `manage.py`
 
@@ -276,6 +277,8 @@ Use `TestCase` with `setUpTestData()` for shared fixtures (created once per clas
 from django.test import TestCase
 from django.urls import reverse
 
+from .models import Article
+
 
 class ArticleTests(TestCase):
     @classmethod
@@ -305,3 +308,20 @@ Register models with a `ModelAdmin` that configures `list_display`, `list_filter
 On Django 6.1+, use the `location` argument of the `@admin.action()` decorator to make actions available on change forms as well as the change list, and prefer explicit field names over `list_select_related = True` (setting it to `True` is deprecated).
 
 See [the admin reference](references/admin.md) for inlines, computed columns, query optimization, custom actions, and permissions.
+
+## Check the Docs, Don't Guess
+
+Django ships a feature release roughly every eight months, and each one deprecates something. When a question turns on version-specific behavior — whether an argument exists, when something was deprecated, what a setting defaults to — fetch the docs instead of answering from memory:
+
+- Current stable docs: <https://docs.djangoproject.com/en/stable/> (redirects to the current version)
+- Release notes for every version: <https://docs.djangoproject.com/en/stable/releases/>
+- Deprecation timeline: <https://docs.djangoproject.com/en/stable/internals/deprecation/>
+- Unreleased version, when a feature is newer than the stable docs: <https://docs.djangoproject.com/en/dev/>
+
+Check the project's installed version before recommending a feature, and say so when a suggestion requires an upgrade:
+
+```bash
+python -c "import django; print(django.get_version())"
+```
+
+Prefer `/en/stable/` over a pinned version number in links so they don't go stale.

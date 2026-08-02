@@ -81,7 +81,7 @@ class Meta:
     ]
 ```
 
-Prefer `UniqueConstraint` over the older `unique_together`, and `Meta.indexes` over per-field `db_index` when the index spans multiple fields or needs a condition. The `CheckConstraint` keyword is `condition`; the older `check` argument is deprecated.
+Prefer `UniqueConstraint` over the older `unique_together`, and `Meta.indexes` over per-field `db_index` when the index spans multiple fields or needs a condition. The `CheckConstraint` keyword is `condition`; the older `check` argument was removed in Django 6.0, so code carrying it over from an older project will raise `TypeError`.
 
 ## `on_delete` Options
 
