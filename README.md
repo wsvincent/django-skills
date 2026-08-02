@@ -39,14 +39,6 @@ Targets Django 6.x and Python 3.12+. Django 5.2 is the current LTS, and the skil
 
 Skills are a new and developing space. You are welcome to copy these or fork them. I'm open to any suggestions raised as Issues.
 
-Before opening a pull request, check that every internal link, heading anchor, and reference file still resolves:
-
-```sh
-python scripts/check_links.py
-```
-
-CI runs the same script on every push and pull request, and checks external URLs weekly.
-
 ## License
 
 [MIT](LICENSE)
