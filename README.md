@@ -26,6 +26,7 @@ The skill triggers automatically when a task involves Django:
 | `references/async.md` | Async views, the Tasks framework |
 | `references/checklists.md` | Step-by-step checklists for setup, deploys, upgrades, and reviews |
 | `references/deployment.md` | Settings layout, HTTPS, CSP, static files, caching, email, monitoring |
+| `references/drf.md` | Django REST framework: serializers, viewsets, routers, auth, permissions, throttling, pagination, filtering, OpenAPI, testing |
 | `references/orm.md` | Models, constraints, managers, N+1 and fetch modes, transactions, migrations |
 | `references/templates.md` | Configuration, inheritance, partials, escaping, custom tags, fragment caching |
 | `references/testing.md` | Test case classes, fixtures, the test client, assertions, async tests |

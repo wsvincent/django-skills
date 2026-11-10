@@ -1,6 +1,6 @@
 ---
 name: django
-description: "Django best practices and conventions. Use when creating, refactoring, or reviewing Django projects, apps, models, views, templates, forms, admin, tests, or settings. Keeps Django code secure, idiomatic, and up to date with the latest features and patterns. Triggers on starting a Django project or app, writing models/migrations/querysets, class-based or function-based views, forms and validation, templates, the admin, tests, async views and background tasks, deployment and security settings, N+1 and slow-query debugging, and Django version upgrades."
+description: "Django best practices and conventions. Use when creating, refactoring, or reviewing Django projects, apps, models, views, templates, forms, admin, tests, or settings. Keeps Django code secure, idiomatic, and up to date with the latest features and patterns. Triggers on starting a Django project or app, writing models/migrations/querysets, class-based or function-based views, forms and validation, templates, the admin, tests, async views and background tasks, Django REST framework APIs (serializers, viewsets, routers, API permissions), deployment and security settings, N+1 and slow-query debugging, and Django version upgrades."
 ---
 
 # Django
@@ -21,6 +21,7 @@ Django is moving to calendar versioning: the releases previously planned as 7.0 
 * Async views, the async ORM, and the Tasks framework: see [the async reference](references/async.md).
 * Testing: `TestCase` with `setUpTestData()`; see [the testing reference](references/testing.md).
 * Admin: a configured `ModelAdmin`, never a bare `register()`; see [the admin reference](references/admin.md).
+* REST APIs with Django REST framework: explicit serializer `fields`, scoped `get_queryset()`, secure `REST_FRAMEWORK` defaults (DRF defaults to `AllowAny`); see [the DRF reference](references/drf.md).
 * Deployment, HTTPS, CSP, static files, caching, email: see [the deployment reference](references/deployment.md).
 * Multi-step tasks — new project, new app, pre-deploy, version upgrade, code review: see [the checklists](references/checklists.md).
 

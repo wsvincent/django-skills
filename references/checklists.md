@@ -106,4 +106,5 @@ Django 6.2 is due in April 2027 and is still in development; nothing here applie
 - [ ] Secrets read from the environment, not literals
 - [ ] Migrations included and reviewed
 - [ ] Tests cover the permission boundaries, not just the happy path
+- [ ] DRF APIs: explicit serializer `fields`, `get_queryset()` scoped to the user, no `AllowAny` default, list endpoints paginated, `ordering_fields` set (see [the DRF reference](drf.md))
 ```
