@@ -179,6 +179,8 @@ exclude = ["author"]  # same problem, inverted
 
 Never write model fields straight from `request.POST` — that skips validation, type coercion, and every constraint the form encodes.
 
+On Django 6.1+, the empty choice of a select uses a more accessible, translatable label defined by `django.db.models.fields.BLANK_CHOICE_LABEL` instead of `"---------"`. The old `BLANK_CHOICE_DASH` constant and the transitional `USE_BLANK_CHOICE_DASH` setting are deprecated — update tests and templates that match on the dashes rather than reverting the label. Use the new `django.forms.Stylesheet` asset in form `Media` when a stylesheet link needs extra HTML attributes.
+
 ### Validation Hooks
 
 Put field-specific checks in `clean_<field>()` and cross-field checks in `clean()`:
@@ -225,7 +227,7 @@ form.save_m2m()  # required after commit=False when the form has m2m fields
 
 ### Formsets and File Uploads
 
-Use `modelformset_factory` / `inlineformset_factory` for editing several related objects at once, and always render `{{ formset.management_form }}`.
+Use `modelformset_factory` / `inlineformset_factory` for editing several related objects at once, and always render `{{ formset.management_form }}`. Still scope the formset's `queryset` to what the user may edit: Django 6.1.2 closed holes where a forged POST could delete objects outside the queryset or create objects through an edit-only formset, so make sure the project runs at least that patch release.
 
 For uploads, bind both POST data and files, and validate the file rather than trusting it:
 

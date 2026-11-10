@@ -180,7 +180,7 @@ On Django 6.1+, use fetch modes to control how the ORM loads data when an unfetc
 
 - `FETCH_ONE` (default): fetch the missing field for the current instance only — the classic N+1 behavior.
 - `FETCH_PEERS`: fetch the missing field for all instances from the same `QuerySet` — an on-demand `prefetch_related()` that reduces most N+1 problems to two queries with no field list to maintain.
-- `RAISE`: raise `FieldFetchBlocked` — use in performance-critical code to prevent unintentional queries.
+- `FETCH_RAISE`: raise `FieldFetchBlocked` — use in performance-critical code to prevent unintentional queries.
 
 ```python
 from django.db import models
@@ -190,7 +190,7 @@ for book in books:
     print(book.author.name)  # two queries total, not N+1
 ```
 
-Prefer explicit `select_related()`/`prefetch_related()` when the needed relations are known; use `FETCH_PEERS` as a safety net for code paths where they aren't, and `RAISE` in hot paths to make accidental queries fail loudly.
+Prefer explicit `select_related()`/`prefetch_related()` when the needed relations are known; use `FETCH_PEERS` as a safety net for code paths where they aren't, and `FETCH_RAISE` in hot paths to make accidental queries fail loudly.
 
 ## Use the Database, Not Python
 
@@ -232,6 +232,13 @@ On Django 6.1+:
 - `BitAnd`, `BitOr`, and `BitXor` are available from `django.db.models`; the `contrib.postgres` versions are deprecated.
 - `QuerySet.totally_ordered` reports whether the ordering is deterministic — useful before paginating.
 - `in_bulk()` is chainable after `values()` / `values_list()`.
+- `GeneratedField(db_persist=False)` creates virtual generated columns on PostgreSQL 18+.
+
+Behavior changes in Django 6.1 that can surface after an upgrade:
+
+- `first()` and `last()` no longer fall back to ordering by primary key when `order_by()` has cleared the ordering — pass an explicit `order_by()` if the result must be deterministic.
+- `union()`, `difference()`, and `intersection()` raise `DatabaseError` when a `Meta.ordering` field is not selected by `values()` / `values_list()`.
+- `filter(key__iexact=None)` on a `JSONField` key transform now matches JSON `null`.
 
 ## Raw SQL
 

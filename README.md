@@ -33,7 +33,7 @@ The skill triggers automatically when a task involves Django:
 
 ## Versions
 
-Targets Django 6.x and Python 3.12+. Django 5.2 is the current LTS, and the skill does not recommend patterns older than the LTS unless a project requires them. Features specific to Django 6.0 and 6.1 are labeled inline so the guidance stays usable on older versions.
+Targets Django 6.1 and Python 3.12+ (Django 6.1 supports Python 3.12–3.15). Django 5.2 is the current LTS, and the skill does not recommend patterns older than the LTS unless a project requires them. Features specific to Django 6.0 and 6.1 are labeled inline so the guidance stays usable on older versions, and the upgrade checklist notes the changes coming in Django 6.2 LTS.
 
 ## Contributing
 

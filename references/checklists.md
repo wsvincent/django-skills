@@ -58,7 +58,7 @@ Deploy order: migrate → `collectstatic` → restart. See references/deployment
 - [ ] Confirm the current version is on the latest patch release first
 - [ ] Read the release notes for EVERY version being skipped, not just the target
 - [ ] Check the deprecation timeline for the target version
-- [ ] Run the suite with `-W error::DeprecationWarning` to surface removals
+- [ ] Run the suite with `-W error::DeprecationWarning` to surface removals (from 6.2, warnings are named for calendar versions, e.g. `RemovedInDjango2028Warning`)
 - [ ] Verify Python and database versions meet the new minimums
 - [ ] Check third-party packages for compatibility before bumping
 - [ ] Upgrade one minor version at a time (e.g. 5.2 → 6.0 → 6.1)
@@ -67,6 +67,30 @@ Deploy order: migrate → `collectstatic` → restart. See references/deployment
 ```
 
 Upgrade to each LTS along the way rather than jumping between distant versions.
+
+Moving to Django 6.1 specifically:
+
+```
+- [ ] Go straight to the latest 6.1.x — 6.1.2 and 6.1.3 are security releases that also change behavior
+- [ ] PostgreSQL 15+, MySQL 8.4+, MariaDB 10.11+, SQLite 3.37+
+- [ ] Expect cache misses after deploy: `cache_page` / `vary_on_*` keys changed
+- [ ] Check `first()` / `last()` calls that relied on implicit pk ordering
+- [ ] Replace deprecated email settings with `MAILERS`
+- [ ] Replace `select_related()` with no arguments, `list_select_related = True`, and `values_list(flat=True)` without a field
+- [ ] Re-check any copied admin templates against the new change-form markup
+```
+
+### Preparing for Django 6.2 LTS
+
+Django 6.2 is due in April 2027 and is still in development; nothing here applies until it is released, but writing code this way now avoids churn:
+
+- Set `async_capable` and `sync_capable` explicitly on middleware; the default becomes `async_capable = False`.
+- Don't rely on `JsonResponse`'s `safe` argument — it is deprecated and its default becomes `False`.
+- Use `functools.cached_property`; `django.utils.functional.cached_property` is deprecated.
+- Use `django.VERSION.feature` / `.patch` / `.status` instead of indexing past the first two components of `django.VERSION`.
+- Plan for PostgreSQL 16+.
+- Template tags may span multiple lines, so a literal `{%` and `%}` on separate lines can now parse as a tag; use `{% templatetag openblock %}` / `{% templatetag closeblock %}` for literal delimiters.
+- New features to expect: the HTTP `QUERY` method (`query()` view handler, `Client.query()`) and the `listurls` management command; `django-admin` is renamed `django`, with the old name kept as an alias.
 
 ## Reviewing Django code
 

@@ -90,7 +90,7 @@ result = await sync_to_async(legacy_blocking_function)(arg)
 
 ## Async Middleware and Tests
 
-Middleware declares which call styles it supports. Mark middleware that can run in both modes so Django does not insert adapter threads around it:
+Middleware declares which call styles it supports. Mark middleware that can run in both modes so Django does not insert adapter threads around it. Set both flags explicitly: Django 6.2 changes the default to `async_capable = False`, so middleware that relies on the old default will start running through a sync adapter:
 
 ```python
 from asgiref.sync import iscoroutinefunction, markcoroutinefunction

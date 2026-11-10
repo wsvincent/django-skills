@@ -7,7 +7,9 @@ description: "Django best practices and conventions. Use when creating, refactor
 
 An unofficial skill for writing Django code with best practices, based on the official Django documentation and community conventions, keeping up to date with new versions and features.
 
-Target Django 6.x and Python 3.12+ for new projects. Django 5.2 is the current LTS; do not write code for versions older than the LTS unless the project requires it. Features new in Django 6.0 and 6.1 are marked below.
+Target Django 6.1 and Python 3.12+ for new projects (Django 6.1 supports Python 3.12–3.15; 3.15 from 6.1.3). Django 5.2 is the current LTS, now receiving security fixes only until April 2028; Django 6.2 LTS is due in April 2027. Do not write code for versions older than the LTS unless the project requires it, and always run the latest patch release of a series. Features new in Django 6.0 and 6.1 are marked below.
+
+Django is moving to calendar versioning: the releases previously planned as 7.0 and 7.1 are now Django 2028 and 2029, so removal dates in deprecation notices refer to those names.
 
 ## Quick Reference
 

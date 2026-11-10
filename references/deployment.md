@@ -69,6 +69,10 @@ On Django 6.1+, leave `SIGNED_COOKIE_LEGACY_SALT_FALLBACK` at its new default of
 
 Django 6.1 also raises the default PBKDF2 iteration count, so existing password hashes upgrade transparently on next login — no action needed beyond expecting a slightly slower login.
 
+The default `algorithm` of `django.utils.crypto.salted_hmac()` and `django.core.signing.base64_hmac()` is deprecated and changes from `"sha1"` to `"sha256"` in Django 2028. Pass `algorithm` explicitly in any code that calls them, so stored signatures don't silently change on a future upgrade.
+
+When running under ASGI on Django 6.1+, `RemoteUserMiddleware` no longer adds the `HTTP_` prefix to header names: a proxy header `AuthUser` is read from `HTTP_AUTHUSER`, matching WSGI.
+
 ## Content Security Policy
 
 Use Django's built-in CSP support (Django 6.0+) instead of the third-party `django-csp` package. Add the middleware and configure a nonce-based policy:
@@ -182,6 +186,8 @@ CACHES = {
 
 Cache expensive computed values and rendered fragments (see [the templates reference](templates.md)) rather than reaching for the whole-site cache middleware, which is easy to get wrong for authenticated pages. Always set a timeout, and always namespace keys with `KEY_PREFIX` when several environments share one cache server.
 
+Django 6.1 changes the cache keys generated for `cache_page` and `vary_on_*` variants (and 6.1.3 further distinguishes an absent `Vary` header from an empty one), so expect a burst of cache misses right after upgrading — warm the cache or schedule the deploy for a quiet period.
+
 Sessions default to the database backend, which is durable and usually correct. Only move sessions to the cache if losing them on a cache restart is acceptable.
 
 ## Email
@@ -205,7 +211,7 @@ MAILERS = {
 
 Select a non-default mailer with the `using` argument to `send_mail()` and friends.
 
-The legacy `EMAIL_BACKEND` and `EMAIL_*` settings, `mail.get_connection()`, and the `connection`/`fail_silently`/`auth_user`/`auth_password` arguments to mail functions are all deprecated in Django 6.1 and will be removed in Django 7.0 — do not write new code with them:
+The legacy `EMAIL_BACKEND` and `EMAIL_*` settings, `mail.get_connection()`, and the `connection`/`fail_silently`/`auth_user`/`auth_password` arguments to mail functions are all deprecated in Django 6.1 and will be removed in Django 2028 (the release formerly planned as 7.0) — do not write new code with them:
 
 ```python
 # DO NOT DO THIS — deprecated in Django 6.1

@@ -132,4 +132,6 @@ admin.site.site_title = "Example"
 admin.site.index_title = "Administration"
 ```
 
-Override admin templates by placing files at `templates/admin/<app>/<model>/change_form.html`, and extend the original with `{% extends "admin/change_form.html" %}` rather than copying it wholesale — copied templates break on upgrade. Django 6.1 reworks change-form markup for accessibility, which is exactly the kind of change a copied template misses.
+Override admin templates by placing files at `templates/admin/<app>/<model>/change_form.html`, and extend the original with `{% extends "admin/change_form.html" %}` rather than copying it wholesale — copied templates break on upgrade. Django 6.1 reworks change-form markup for accessibility, removes the `wide` CSS class, moves the `object-tools` block out of `content`, and renders breadcrumbs as an `<ol>` of `<li>` items — exactly the kind of change a copied template misses.
+
+On Django 6.1+, set `ModelAdmin.delete_confirmation_max_display` to cap how many related objects the delete confirmation page lists; on models with large cascades the full list is slow to build and useless to read.
